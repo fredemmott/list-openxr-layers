@@ -18,6 +18,7 @@ jobs:
         run: |
           $pfxPath="${{runner.temp}}/MyCert.pfx"
           [System.Convert]::FromBase64String($Env:CODE_SIGNING_PFX_BASE64) | Set-Content $pfxPath -AsByteStream
+          Get-Item $pfxPath
           Add-Content $Env:GITHUB_OUTPUT "HAVE_KEY=true"
           Add-Content $Env:GITHUB_OUTPUT "PATH=$pfxPath"
       - uses: actions/checkout@v2
