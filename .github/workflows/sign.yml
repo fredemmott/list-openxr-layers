@@ -1,0 +1,44 @@
+name: Sign script
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v**
+jobs:
+  build:
+    name: Sign
+    runs-on: windows-2022
+    steps:
+      - name: Fetch code-signing key
+        id: fetch-key
+        env:
+          CODE_SIGNING_PFX_BASE64: ${{ secrets.CODE_SIGNING_KEY_PFX_BASE64 }}
+        if: ${{ (github.repository == 'fredemmott/list-openxr-layers') && (github.event_name == 'push')}}
+        run: |
+          $pfxPath="${{runner.temp}}/MyCert.pfx"
+          [System.Convert]::FromBase64String($Env:CODE_SIGNING_PFX_BASE64) | Set-Content $pfxPath -AsByteStream
+          Add-Content $Env:GITHUB_OUTPUT "HAVE_KEY=true"
+          Add-Content $Env:GITHUB_OUTPUT "PATH=$pfxPath"
+      - uses: actions/checkout@v2
+        with:
+          path: source
+          fetch-depth: 0
+      - name: Sign file
+        working-directory: build
+        if: ${{steps.fetch-key.outputs.HAVE_KEY}}
+        run: |
+            # Sign MSI
+            # Known path for the GitHub Actions windows 2022 runner, may need updating
+            & 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86\signtool.exe' `
+              sign `
+              /d "list-openxr-layers" `
+              /t http://timestamp.digicert.com `
+              /fd SHA256 `
+              /f "${{steps.fetch-key.outputs.PATH}}" `
+              source/list-openxr-layers.ps1
+      - name: Attach signed file to build
+        uses: actions/upload-artifact@v2
+        with:
+          name: list-openxr-layers.ps1
+          path: source/list-openxr-layers.ps1
