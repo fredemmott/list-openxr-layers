@@ -13,12 +13,11 @@ jobs:
       - name: Fetch code-signing key
         id: fetch-key
         env:
-          CODE_SIGNING_PFX_BASE64: ${{ secrets.CODE_SIGNING_KEY_PFX_BASE64 }}
+          CODE_SIGNING_KEY_PFX_BASE64: ${{ secrets.CODE_SIGNING_KEY_PFX_BASE64 }}
         if: ${{ (github.repository == 'fredemmott/list-openxr-layers') && (github.event_name == 'push')}}
         run: |
           $pfxPath="${{runner.temp}}/MyCert.pfx"
-          [System.Convert]::FromBase64String($Env:CODE_SIGNING_PFX_BASE64) | Set-Content $pfxPath -AsByteStream
-          Get-Item $pfxPath
+          [System.Convert]::FromBase64String($Env:CODE_SIGNING_KEY_PFX_BASE64) | Set-Content $pfxPath -AsByteStream
           Add-Content $Env:GITHUB_OUTPUT "HAVE_KEY=true"
           Add-Content $Env:GITHUB_OUTPUT "PATH=$pfxPath"
       - uses: actions/checkout@v2
