@@ -6,6 +6,9 @@ on:
     tags:
       - v**
 jobs:
+  strategy:
+    matrix:
+      script: [ "list-openxr-layers", "edit-openxr-layers" ]
   build:
     name: Sign
     runs-on: windows-2022
@@ -31,13 +34,13 @@ jobs:
             # Known path for the GitHub Actions windows 2022 runner, may need updating
             & 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86\signtool.exe' `
               sign `
-              /d "list-openxr-layers" `
+              /d "${{matrix.script}}" `
               /t http://timestamp.digicert.com `
               /fd SHA256 `
               /f "${{steps.fetch-key.outputs.PATH}}" `
-              source/list-openxr-layers.ps1
+              source/${{matrix.script}}.ps1
       - name: Attach signed file to build
         uses: actions/upload-artifact@v2
         with:
-          name: list-openxr-layers.ps1
-          path: source/list-openxr-layers.ps1
+          name: ${{matrix.script}}.ps1
+          path: source/${{matrix.script}}.ps1
