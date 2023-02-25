@@ -6,12 +6,12 @@ on:
     tags:
       - v**
 jobs:
-  strategy:
-    matrix:
-      script: [ "list-openxr-layers", "edit-openxr-layers" ]
   build:
     name: Sign
     runs-on: windows-2022
+    strategy:
+      matrix:
+        script: [ "list-openxr-layers", "edit-openxr-layers" ]
     steps:
       - name: Fetch code-signing key
         id: fetch-key
