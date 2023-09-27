@@ -1,3 +1,15 @@
+# Downloading and running the scripts
+
+Download the signed scripts from [the latest release](https://github.com/fredemmott/openxr-layer-scripts/releases/latest).
+
+A fresh install of Windows will refuse to run any PowerShell scripts; to run these scripts, open an administrator terminal, then:
+
+```
+powershell -ExecutionPolicy RemoteSigned
+```
+
+... then run the scripts from inside the Powershell.
+
 # list-openxr-layers
 
 This is a small PowerShell script for listing OpenXR API layers, in load order, and whether or not they're active.
@@ -39,18 +51,6 @@ edit-openxr-layers -Mode Before "C:\...path to LayerA" -RelativeTo "C:\...path t
 ```
 
 `-Mode After` is also supported.
-
-# Running the scripts
-
-Download the signed scripts from [the latest release](https://github.com/fredemmott/openxr-layer-scripts/releases/latest).
-
-A fresh install of Windows will refuse to run any PowerShell scripts; to run these scripts, open an administrator terminal, then:
-
-```
-powershell -ExecutionPolicy RemoteSigned
-```
-
-... then run the scripts from inside the Powershell.
 
 # License
 
